@@ -1,5 +1,14 @@
 const { Schema, model } = require('mongoose');
 
+const MemberAd = {
+    fName: String,
+    lName: String,
+    email: String,
+    title: String,
+    body: String,
+    date: Date,
+    tags: [String]
+}
 
 const UsuarioSchema = Schema({
     email: {
@@ -58,8 +67,13 @@ const UsuarioSchema = Schema({
     },
     terms: {
         type: Boolean
+    },
+    ads: {
+        type:[MemberAd]
     }
 
 });
+
+
 
 module.exports = model('Usuario', UsuarioSchema);

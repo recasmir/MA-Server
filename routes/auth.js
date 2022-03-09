@@ -1,7 +1,7 @@
 
 const { Router } = require('express');
 const { check } = require('express-validator');
-const { crearUsuario, loginUsuario, revalidarToken } = require('../controllers/auth.controller');
+const { crearUsuario, loginUsuario, revalidarToken, actualizarUsusario, addContact, recuperarInfoUsuarios } = require('../controllers/auth.controller');
 const { validarCampos } = require('../middlewares/validar-campos');
 const { validarJWT } = require('../middlewares/validar-jwt');
 
@@ -21,7 +21,7 @@ router.post('/register', [
 ], crearUsuario);
 
 
-//Login member
+//Login usuario
 router.post('/', [
     check('email', 'Email is compulsory').isEmail(),
     check('pwd', 'Password is compulsory').isLength({min:6}),
@@ -31,7 +31,14 @@ router.post('/', [
 //Validar y revalidar JWT
 router.get('/renew', validarJWT, revalidarToken);
 
+//actualizar usuario
+router.post('/update', actualizarUsusario);
 
+//recuperar todos los usuarios
+router.get('/all', recuperarInfoUsuarios);
+
+//añadir contactos a través del contactForm
+router.post('/addcontact', addContact);
 
 
 module.exports = router;

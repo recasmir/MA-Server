@@ -1,11 +1,13 @@
 const { response } = require('express');
 const Usuario = require('../models/Usuario');
+const Contacto = require('../models/contacto')
 const bcrypt = require('bcryptjs');
-const { generarJWT } =require('../helpers/jwt')
+const { generarJWT } =require('../helpers/jwt');
+const { Router } = require('express');
 
 const crearUsuario = async(req, res = response) => {
 
-    const{ email, pwd, location, fName, lName, age, gender, traveller, nChildren, aChildren, dog, transport, trip, about } = req.body;
+    const{ email, pwd, location, fName, lName, traveller, transport, terms, age, gender, nChildren, aChildren, dog, trip, about, ads } = req.body;
 
     try {
 
@@ -15,7 +17,7 @@ const crearUsuario = async(req, res = response) => {
     if(usuario){
         return res.status(400).json({
             ok:false,
-            msg:'El usuario ya existe con este email.'
+            msg:'There is already a member with this email.'
         })
     }
 
@@ -50,13 +52,15 @@ const crearUsuario = async(req, res = response) => {
         transport,
         trip,
         about,
+        terms,
+        ads,
         token
        })
 
     } catch (error) {
         return res.json({
             ok: false,
-            msg: 'Por favor hable con el administrador'
+            msg: 'Please, talk to the administrator.'
         })
     }
 
@@ -72,7 +76,7 @@ const loginUsuario = async (req, res = response) => {
         if( !dbUser ) {
             return res.status(400).json({
                 ok:false,
-                msg:'Credenciales no son válidas.' 
+                msg:'Email and/or password are not valid.' 
             });
         }
 
@@ -82,7 +86,7 @@ const loginUsuario = async (req, res = response) => {
         if( !validPassword ){
             return res.status(400).json({
                 ok:false,
-                msg:'Credenciales no son válidas.' 
+                msg:'Email and/or password are not valid.' 
             });
         }
         //Generar JWT
@@ -91,8 +95,20 @@ const loginUsuario = async (req, res = response) => {
         return res.json({
             ok:true,
             uid:dbUser.id,
-            fName: dbUser.fName,
             email:dbUser.email,
+            location:dbUser.location,
+            fName:dbUser.fName,
+            lName:dbUser.lName,
+            age:dbUser.age,
+            gender:dbUser.gender,
+            traveller:dbUser.traveller,
+            nChildren:dbUser.nChildren,
+            aChildren:dbUser.aChildren,
+            dog:dbUser.dog,
+            transport:dbUser.transport,
+            trip:dbUser.trip,
+            about:dbUser.about,
+            ads:dbUser.ads,
             token
            })
     
@@ -101,7 +117,7 @@ const loginUsuario = async (req, res = response) => {
         console.log(error);
         return res.status(500).json({
             ok: false,
-            msg: 'Hable con el administrador'
+            msg: 'Please, talk to the administrator.'
         })
     }
 }
@@ -120,14 +136,97 @@ const revalidarToken = async (req, res = response) => {
     return res.json({
         ok: true,
         uid,
-        fName: dbUser.fName,
-        email: dbUser.email,
+        email:dbUser.email,
+        location:dbUser.location,
+        fName:dbUser.fName,
+        lName:dbUser.lName,
+        age:dbUser.age,
+        gender:dbUser.gender,
+        traveller:dbUser.traveller,
+        nChildren:dbUser.nChildren,
+        aChildren:dbUser.aChildren,
+        dog:dbUser.dog,
+        transport:dbUser.transport,
+        trip:dbUser.trip,
+        about:dbUser.about,
+        ads:dbUser.ads,
         token
     })
+
 }
+
+const actualizarUsusario = async (req, res = response) => {
+    
+    const { email, fName, lName, ads } = req.body;
+
+    try{
+
+    const dbUser = await Usuario.updateOne(
+             { email },
+             {
+               $set: { 'ads': ads },
+               $currentDate: { lastModified: true }
+             }
+           );  
+           console.log('afeter set', ads)
+    return res.json({
+        ok:true,
+        fName,
+        lName,
+        email,
+        ads
+    
+
+    })
+    }catch(error){
+        console.log(error);
+        return res.status(500).json({
+            ok:false,
+            msg:'Please, contact the administrator.'
+        })
+    }
+
+}
+
+const addContact = async (req, res = response) =>{
+
+    const{fNameContact, lNameContact, emailContact, commentsContact} = req.body;
+    console.log(req.body);
+    try{
+        const dbContacto = new Contacto(req.body);
+        await dbContacto.save();
+        return res.status(201).json({
+            ok:true,
+            uid:dbContacto.id,
+            msg:'Message sent successfully.',
+            fNameContact,
+            lNameContact,
+            emailContact,
+            commentsContact
+        })
+    }catch (error) {
+        return res.json({
+            ok: false,
+            msg: 'Please, talk to the administrator.'
+        })
+    }
+}
+
+const recuperarInfoUsuarios = async (req, res = response) =>{
+ 
+    const dbUser = await Usuario.find({});
+
+    console.log(dbUser);
+   
+    return res.send(dbUser);
+}
+
 
 module.exports = {
     crearUsuario,
     loginUsuario,
-    revalidarToken
+    revalidarToken,
+    actualizarUsusario,
+    addContact,
+    recuperarInfoUsuarios
 }
