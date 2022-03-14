@@ -1,7 +1,7 @@
 
 const { Router } = require('express');
 const { check } = require('express-validator');
-const { crearUsuario, loginUsuario, revalidarToken, actualizarUsusario, addContact, recuperarInfoUsuarios } = require('../controllers/auth.controller');
+const { crearUsuario, loginUsuario, revalidarToken, actualizarUsusario, addContact, recuperarInfoUsuarios, recuperarUsuario } = require('../controllers/auth.controller');
 const { validarCampos } = require('../middlewares/validar-campos');
 const { validarJWT } = require('../middlewares/validar-jwt');
 
@@ -39,6 +39,9 @@ router.get('/all', recuperarInfoUsuarios);
 
 //añadir contactos a través del contactForm
 router.post('/addcontact', addContact);
+
+//recuperar un usario via id
+router.get('/usuario', recuperarUsuario);
 
 
 module.exports = router;

@@ -212,12 +212,23 @@ const addContact = async (req, res = response) =>{
     }
 }
 
-const recuperarInfoUsuarios = async (req, res = response) =>{
+const recuperarInfoUsuarios = async (req, res = response) => {
  
     const dbUser = await Usuario.find({});
 
     console.log(dbUser);
    
+    return res.send(dbUser);
+}
+
+const recuperarUsuario = async (req, res = response) => {
+
+    const {email} = req.body;
+
+    const dbUser = await Usuario.find({email});
+
+    console.log(dbUser);
+
     return res.send(dbUser);
 }
 
@@ -228,5 +239,6 @@ module.exports = {
     revalidarToken,
     actualizarUsusario,
     addContact,
-    recuperarInfoUsuarios
+    recuperarInfoUsuarios,
+    recuperarUsuario
 }
