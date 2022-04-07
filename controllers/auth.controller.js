@@ -168,7 +168,7 @@ const actualizarUsusario = async (req, res = response) => {
                $currentDate: { lastModified: true }
              }
            );  
-           console.log('afeter set', ads)
+           console.log('after set', ads)
     return res.json({
         ok:true,
         fName,
@@ -187,6 +187,60 @@ const actualizarUsusario = async (req, res = response) => {
     }
 
 }
+
+const actualizarAllInfoUsusario = async (req, res = response) => {
+    
+    const{ email, location, fName, lName, traveller, transport, age, gender, nChildren, aChildren, dog, trip, about } = req.body;
+
+    try{
+
+    const dbUser = await Usuario.updateOne(
+             { email },
+             {
+               $set: { 'location': location, 'fName': fName, 'lName': lName,'traveller': traveller, 'transport': transport, 'age': age, 'gender': gender, 'nChildren': nChildren, 'aChildren': aChildren, 'dog': dog, 'trip': trip, 'about': about },
+               $currentDate: { lastModified: true }
+             }
+           );  
+           console.log('after set', dbUser)
+    return res.json({
+        ok:true,
+        fName,
+        lName,
+        email,
+        location,
+        traveller,
+        transport,
+        age,
+        gender,
+        nChildren,
+        aChildren,
+        dog,
+        trip,
+        about
+    
+
+    })
+    }catch(error){
+        console.log(error);
+        return res.status(500).json({
+            ok:false,
+            msg:'Please, contact the administrator.'
+        })
+    }
+
+}
+
+// $set: { 'fName': fName },
+// $set: { 'lName': lName },
+// $set: { 'traveller': traveller },
+// $set: { 'transport': transport },
+// $set: { 'age': age },
+// $set: { 'gender': gender },
+// $set: { 'nChildren': nChildren },
+// $set: { 'aChildren': aChildren },
+// $set: { 'dog': dog },
+// $set: { 'trip': trip },
+// $set: { 'about': about },
 
 const addContact = async (req, res = response) =>{
 
@@ -240,5 +294,6 @@ module.exports = {
     actualizarUsusario,
     addContact,
     recuperarInfoUsuarios,
-    recuperarUsuario
+    recuperarUsuario,
+    actualizarAllInfoUsusario
 }

@@ -1,7 +1,7 @@
 
 const { Router } = require('express');
 const { check } = require('express-validator');
-const { crearUsuario, loginUsuario, revalidarToken, actualizarUsusario, addContact, recuperarInfoUsuarios, recuperarUsuario } = require('../controllers/auth.controller');
+const { crearUsuario, loginUsuario, revalidarToken, actualizarUsusario, addContact, recuperarInfoUsuarios, recuperarUsuario, actualizarAllInfoUsusario } = require('../controllers/auth.controller');
 const { validarCampos } = require('../middlewares/validar-campos');
 const { validarJWT } = require('../middlewares/validar-jwt');
 
@@ -31,7 +31,7 @@ router.post('/', [
 //Validar y revalidar JWT
 router.get('/renew', validarJWT, revalidarToken);
 
-//actualizar usuario
+//actualizar usuario, añadir ads
 router.post('/update', actualizarUsusario);
 
 //recuperar todos los usuarios
@@ -42,6 +42,9 @@ router.post('/addcontact', addContact);
 
 //recuperar un usario via id
 router.get('/usuario', recuperarUsuario);
+
+//actualizar toda info usuario
+router.post('/updateallinfo', actualizarAllInfoUsusario);
 
 
 module.exports = router;
